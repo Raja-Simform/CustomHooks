@@ -1,32 +1,36 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 
-export default function useUndoRedo(initialValue: string) {
-  const [history, setHistory] = useState([initialValue]);
+export default function useUndoRedo<T>(initialValue: T) {
+  const history = useRef<T[]>([initialValue]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [state, setState] = useState(initialValue);
 
-  const state = history[currentIndex];
-
-  const setState = useCallback(
-    (newValue: string) => {
-      const updatedHistory = history.slice(0, currentIndex + 1);
-      updatedHistory.push(newValue);
-      setHistory(updatedHistory);
-      setCurrentIndex(updatedHistory.length - 1);
+  const setValue = useCallback(
+    (newValue: T) => {
+      if (newValue === history.current[currentIndex]) return;
+      history.current = history.current.slice(0, currentIndex + 1);
+      history.current.push(newValue);
+      setCurrentIndex(history.current.length - 1);
+      setState(newValue);
     },
-    [history, currentIndex]
+    [currentIndex]
   );
 
   const undo = useCallback(() => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+      const newIndex = currentIndex - 1;
+      setCurrentIndex(newIndex);
+      setState(history.current[newIndex]);
     }
   }, [currentIndex]);
 
   const redo = useCallback(() => {
-    if (currentIndex < history.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+    if (currentIndex < history.current.length - 1) {
+      const newIndex = currentIndex + 1;
+      setCurrentIndex(newIndex);
+      setState(history.current[newIndex]);
     }
-  }, [currentIndex, history.length]);
+  }, [currentIndex]);
 
-  return [state, setState, undo, redo] as const;
+  return [state, setValue, undo, redo] as const;
 }

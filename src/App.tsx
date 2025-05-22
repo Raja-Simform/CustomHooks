@@ -1,38 +1,19 @@
-// // App.tsx
-// import { useEffect } from "react";
-// import useKeyPress from "./hooks/useKeyPress";
-// // import useSessionStorage from "./hooks/useSessionStorage";
 
-// function App() {
-//   // const [value, setValue, removeValue] = useSessionStorage("test-key", 5000);
-//   const value=useKeyPress('Escape');
-//   useEffect(() => {
-//     // removeValue();
-      
-//   }, []);
+import useOffline from "./hooks/useOffline";
 
-//   useEffect(() => {
-//     console.log(value);
-//   }, [value]);
-
-//   return <></>;
-// }
-
-// export default App;
-import { useEffect } from "react";
-import useKeyPress from "./hooks/useKeyPress";
 
 function App() {
-  const keyPressed = useKeyPress("Escape");
-
-  useEffect(() => {
-    if (keyPressed) {
-      console.log("Escape key pressed!");
-    }
-  }, [keyPressed]);
-
-  return <></>;
+  const isOffline = useOffline();
+  console.log(isOffline);
+  return (
+    <div>
+      {isOffline ? (
+        <p>You are currently offline.</p>
+      ) : (
+        <p>You are online.</p>
+      )}
+    </div>
+  );
 }
 
 export default App;
-
