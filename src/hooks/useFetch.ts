@@ -9,9 +9,9 @@ export default function useFetch<T>({ fn,enabled}: useFetchProps<T>) {
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const ref=useRef(fn);
-  useEffect(()=>{
-    ref.current=fn;
-  },[fn]);
+  // useEffect(()=>{
+  //   ref.current=fn;
+  // },[fn]);
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     setError(null);

@@ -4,6 +4,7 @@ import useOffline from "./hooks/useOffline";
 
 function App() {
   const isOffline = useOffline();
+  // const { copy, isCopied } = useClipboard();
   console.log(isOffline);
   return (
     <div>
