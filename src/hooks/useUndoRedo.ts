@@ -1,36 +1,52 @@
 import { useState, useCallback, useRef } from "react";
-
+type History<T> = {
+  history: T[];
+  currentIndex: number;
+};
 export default function useUndoRedo<T>(initialValue: T) {
-  const history = useRef<T[]>([initialValue]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const historyState = useRef<History<T>>({
+    history: [initialValue],
+    currentIndex: 0,
+  });
   const [state, setState] = useState(initialValue);
 
-  const setValue = useCallback(
-    (newValue: T) => {
-      if (newValue === history.current[currentIndex]) return;
-      history.current = history.current.slice(0, currentIndex + 1);
-      history.current.push(newValue);
-      setCurrentIndex(history.current.length - 1);
-      setState(newValue);
-    },
-    [currentIndex]
-  );
+  const setValue = useCallback((newValue: T) => {
+    const { history, currentIndex } = historyState.current;
+    if (newValue === history[currentIndex]) return;
+    const temp = history.slice(0, currentIndex + 1);
+    temp.push(newValue);
+    historyState.current = {
+      history: temp,
+      currentIndex: temp.length - 1,
+    };
+    setState(newValue);
+  }, []);
 
   const undo = useCallback(() => {
+    const { history, currentIndex } = historyState.current;
+
     if (currentIndex > 0) {
       const newIndex = currentIndex - 1;
-      setCurrentIndex(newIndex);
-      setState(history.current[newIndex]);
+      historyState.current = {
+        history,
+        currentIndex: newIndex,
+      };
+      setState(history[newIndex]);
     }
-  }, [currentIndex]);
+  }, []);
 
   const redo = useCallback(() => {
-    if (currentIndex < history.current.length - 1) {
+    const { history, currentIndex } = historyState.current;
+
+    if (currentIndex < history.length - 1) {
       const newIndex = currentIndex + 1;
-      setCurrentIndex(newIndex);
-      setState(history.current[newIndex]);
+      historyState.current = {
+        history,
+        currentIndex: newIndex,
+      };
+      setState(history[newIndex]);
     }
-  }, [currentIndex]);
+  }, []);
 
   return [state, setValue, undo, redo] as const;
 }
