@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react"
+import { useState} from "react"
 
 interface useFormProps<T>{
     initialValues:T,
@@ -11,7 +11,7 @@ export default function useForm<T>({initialValues,onSubmit}:useFormProps<T>){
            ...prev,...newValue
         }));
      }
-     function handleSubmit(event:FormEvent<SubmitEvent>){
+     function handleSubmit(event:React.FormEvent<HTMLFormElement>){
         event.preventDefault();
         onSubmit(values);
      }

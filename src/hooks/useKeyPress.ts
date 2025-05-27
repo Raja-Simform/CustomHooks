@@ -9,10 +9,10 @@ export default function useKeyPress(targetKey: string) {
           setKeyPressed(true);
         }
       }
-    document.addEventListener("keydown", downHandler);
+    window.addEventListener("keydown", downHandler);
 
     return () => {
-      document.removeEventListener("keydown", downHandler);
+      window.removeEventListener("keydown", downHandler);
 
     };
   }, [targetKey]);
