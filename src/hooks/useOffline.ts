@@ -7,7 +7,15 @@ export default function useOffline() {
     function handleOffline() {
       setOnline(false);
     }
+    function handleOnline(){
+      setOnline(true);
+    }
     window.addEventListener("offline", handleOffline);
+    window.addEventListener("online",handleOnline);
+    return()=>{
+      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online",handleOnline);
+    }
   }, [online]);
   if(!online){
     return !online;
