@@ -12,6 +12,8 @@ import useKeyPress from "./hooks/useKeyPress";
 import useLocalStorage from "./hooks/useLocalStorage";
 import useOnClickOutside from "./hooks/useOnClickOutside";
 import usePrevious from "./hooks/usePrevious";
+import useLongPressed from "./hooks/useLongPressed";
+import useLongPressToAccelerate from "./hooks/useLongPressToAccelerate";
 
 interface User {
   id: number;
@@ -22,6 +24,8 @@ interface User {
 function App() {
   const isOffline = useOffline();
   const { copy, copied } = useClipboard();
+  const attr1 = useLongPressed(() => console.log("hello"));
+  const attr2 = useLongPressToAccelerate(() => console.log("hello"));
   const { data, error, isLoading, refetch } = useFetch<User[]>({
     fn: () =>
       fetch("https://jsonplaceholder.typicode.com/users").then((res) =>
@@ -332,7 +336,7 @@ function App() {
         )}
       </section>
 
-      <section>
+      <section className="mb-10 pb-5 border-b border-gray-300">
         <h2 className="text-2xl font-semibold mb-3 text-gray-800">
           Previous State
         </h2>
@@ -352,6 +356,23 @@ function App() {
           Increment Count
         </button>
       </section>
+      <section className="mb-10 pb-5 border-b border-gray-300">
+        <button
+          {...attr1}
+          className="px-5 py-2 bg-[#2A7B9B] hover:bg-[#205D75] text-white rounded-md"
+        >
+          LongPressedButton
+        </button>
+      </section>
+      <section className="mb-10 pb-5 border-b border-gray-300">
+        <button
+          {...attr2}
+          className="px-5 py-2 bg-[#2A7B9B] hover:bg-[#205D75] text-white rounded-md"
+        >
+          LongPressToAccelerateButton
+        </button>
+      </section>
+      
     </div>
   );
 }
